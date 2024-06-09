@@ -13,140 +13,19 @@
 #define MAX_Y 30
 #define scale 20
 
-RECT r,messages;
+RECT r,messages,errors1,errors2;
 HDC hdc;
 PAINTSTRUCT ps;
 HBRUSH background,font_brush;
 
+char movingError[80]="Stop! Moving Error!";
 char Autopilot[80]="Autopilot Mode";
-char status2[80]="Cargo compartment is full! Wait for additional cargo module";
-
-//
-//typedef struct pumpkin{
-//    int flag;
-//    int x;
-//    int y;
-//    double r;
-//    int max_r;
-//    double R;
-//    double g_rate;
-//    double r_rate;
-//    int size;
-//    HBRUSH*ripeness;
-//}pumpkin;
-//
-//typedef struct pumpkin_bush{
-//    int x;
-//    int y;
-//    double r;
-//    int size;
-//    struct pumpkin*pumpkins;
-//}pumpkin_bush;
-//
-//typedef struct bed{
-//    int x;
-//    int y;
-//    int width;
-//    int height;
-//    HBRUSH color;
-//    int size;
-//    struct pumpkin_bush*pumpkin_bushs;
-//}bed;
-//
-//typedef struct field{
-//    struct bed*beds;
-//    int size;
-//    HBRUSH color;
-//}field;
-
-
-//typedef struct wheel{
-//    int x;
-//    int y;
-//    double ang;
-//    int width;
-//    int height;
-//    HBRUSH color;
-//}wheel;
-//
-//typedef struct roboticTrolley{
-//    int x;
-//    int y;
-//    int width;
-//    int height;
-//    HBRUSH color;
-//    HBRUSH color2;
-//    struct wheel*wheels;
-//    int status;
-//    int dir;
-//    int value;
-//    int pos;
-//}roboticTrolley;
-//
-//typedef struct dron{
-//    struct roboticTrolley*head;
-//    int size;
-//    int dir;
-//    int value;
-//    struct roboticTrolley**tail;
-//}dron;
+char status2[80]="Stop! Cargo compartment is full! Wait for additional cargo module";
 
 roboticTrolley*my_rt=NULL;
-//
-//roboticTrolley*initTrolley(int x,int y){
-//    int height=2,width=2;
-//    roboticTrolley*my_rt=(roboticTrolley*)malloc(sizeof(roboticTrolley));
-//    my_rt->height=height;
-//    my_rt->width=width;
-//    my_rt->x=x;//20;
-//    my_rt->y=y;//2;
-//    my_rt->color=CreateSolidBrush(RGB(80,80,80));
-//    my_rt->color2=CreateSolidBrush(RGB(255,100,0));
-//    my_rt->wheels=(wheel*)malloc(sizeof(wheel)*4);
-//    my_rt->dir=5;
-//    my_rt->value=0;
-//    my_rt->status=1;
-//    my_rt->pos=1;
-//    my_rt->wheels[0].x=my_rt->x*scale+2;
-//    my_rt->wheels[0].y=my_rt->y*scale-8;
-//    my_rt->wheels[0].width=16;
-//    my_rt->wheels[0].height=8;
-//    my_rt->wheels[0].ang=0;
-//    my_rt->wheels[0].color=CreateSolidBrush(RGB(0,0,0));
-//
-//    my_rt->wheels[1].x=(my_rt->x+1)*scale+2;
-//    my_rt->wheels[1].y=my_rt->y*scale-8;
-//    my_rt->wheels[1].width=16;
-//    my_rt->wheels[1].height=8;
-//    my_rt->wheels[1].ang=0;
-//    my_rt->wheels[1].color=CreateSolidBrush(RGB(0,0,0));
-//
-//    my_rt->wheels[2].x=my_rt->x*scale+2;
-//    my_rt->wheels[2].y=(my_rt->y+2)*scale;
-//    my_rt->wheels[2].width=16;
-//    my_rt->wheels[2].height=8;
-//    my_rt->wheels[2].ang=0;
-//    my_rt->wheels[2].color=CreateSolidBrush(RGB(0,0,0));
-//
-//    my_rt->wheels[3].x=(my_rt->x+1)*scale+2;
-//    my_rt->wheels[3].y=(my_rt->y+2)*scale;
-//    my_rt->wheels[3].width=16;
-//    my_rt->wheels[3].height=8;
-//    my_rt->wheels[3].ang=0;
-//    my_rt->wheels[3].color=CreateSolidBrush(RGB(0,0,0));
-//    return my_rt;
-//}
+
 
 dron*my_dron;
-
-//dron*initDron(){
-//    dron*my_dron=(dron*)malloc(sizeof(dron));
-//    my_dron->head=initTrolley(20,2);
-//    my_dron->size=0;
-//    int value=0;
-//    my_dron->tail=(roboticTrolley**)malloc(sizeof(roboticTrolley*)*10);
-//    return my_dron;
-//}
 
 int commonValue(dron*my_dron){
     int value=my_dron->head->value;
@@ -189,235 +68,23 @@ void takePumpkin(field*my_field,dron*my_dron){
     }
 }
 
-//roboticTrolley*  turnHorysontal(roboticTrolley* my_rt){
-//    for(int i=0;i<4;i++){
-//        my_rt->wheels[i].width=16;
-//        my_rt->wheels[i].height=8;
-//    }
-//    my_rt->wheels[0].x=my_rt->x*scale+2;
-//    my_rt->wheels[0].y=my_rt->y*scale-8;
-//
-//    my_rt->wheels[1].x=(my_rt->x+1)*scale+2;
-//    my_rt->wheels[1].y=my_rt->y*scale-8;
-//
-//    my_rt->wheels[2].x=my_rt->x*scale+2;
-//    my_rt->wheels[2].y=(my_rt->y+2)*scale;
-//
-//    my_rt->wheels[3].x=(my_rt->x+1)*scale+2;
-//    my_rt->wheels[3].y=(my_rt->y+2)*scale;
-//    return my_rt;
-//}
-//
-//roboticTrolley*  turnVertical(roboticTrolley* my_rt){
-//    for(int i=0;i<4;i++){
-//        my_rt->wheels[i].width=8;
-//        my_rt->wheels[i].height=16;
-//    }
-//    my_rt->wheels[0].x=my_rt->x*scale-8;
-//    my_rt->wheels[0].y=(my_rt->y+1)*scale+2;
-//
-//    my_rt->wheels[1].x=my_rt->x*scale-8;
-//    my_rt->wheels[1].y=my_rt->y*scale+2;
-//
-//    my_rt->wheels[2].x=(my_rt->x+2)*scale;
-//    my_rt->wheels[2].y=(my_rt->y+1)*scale+2;
-//
-//    my_rt->wheels[3].x=(my_rt->x+2)*scale;
-//    my_rt->wheels[3].y=my_rt->y*scale+2;
-//    return my_rt;
-//}
-//
-//roboticTrolley* moveLeft(roboticTrolley*my_rt){//¬лево
-//    //printf("Left");
-//    if(my_rt->x>0){
-//        my_rt->x = my_rt->x - 2;
-//        my_rt=turnHorysontal(my_rt);
-//        my_rt->pos=1;
-//    }
-//    return my_rt;
-//}
-//
-//roboticTrolley* moveRight(roboticTrolley*my_rt){//¬право
-//	if (my_rt->x < (MAX_X-1)){
-//		my_rt->x = my_rt->x + 2;
-//		my_rt=turnHorysontal(my_rt);
-//		my_rt->pos=1;
-//    }
-//    return my_rt;
-//}
-//
-//roboticTrolley* moveUp(roboticTrolley*my_rt){//¬верх
-//	if (my_rt->y > 0){
-//		my_rt->y = my_rt->y - 2;
-//		my_rt=turnVertical(my_rt);
-//		my_rt->pos=2;
-//    }
-//    return my_rt;
-//}
-//
-//roboticTrolley* moveDown(roboticTrolley*my_rt){//¬низ
-//	if (my_rt->y < (MAX_Y-1)){
-//		my_rt->y = my_rt->y + 2;
-//		my_rt=turnVertical(my_rt);
-//		my_rt->pos=2;
-//    }
-//    return my_rt;
-//}
-//
-//roboticTrolley* autoMove(roboticTrolley*my_rt){
-//    if(my_rt->x>my_dron->head->x){
-//        my_rt=moveLeft(my_rt);
-//    }else{
-//        if(my_rt->y+2<my_dron->head->y){
-//            my_rt=moveDown(my_rt);
-//        }else{
-//            my_dron->tail[my_dron->size]=my_rt;
-//            my_dron->size++;
-//            my_rt=NULL;
-//            my_dron->head->status=1;
-//        }
-//    }
-//    return my_rt;
-//}
-//
-//dron*moveTail(dron*my_dron){
-//    if(my_dron->size>0){
-//            for (int i = my_dron->size - 1; i > 0; i--){
-//            my_dron->tail[i]->x = my_dron->tail[i-1]->x;
-//            my_dron->tail[i]->y = my_dron->tail[i-1]->y;
-//            my_dron->tail[i]->pos = my_dron->tail[i-1]->pos;
-//        }
-//        my_dron->tail[0]->x = my_dron->head->x;
-//        my_dron->tail[0]->y = my_dron->head->y;
-//        my_dron->tail[0]->pos = my_dron->head->pos;
-//        for (int i = my_dron->size - 1; i >= 0; i--){
-//            switch(my_dron->tail[i]->pos){
-//                case 1:my_dron->tail[i]=turnHorysontal(my_dron->tail[i]);break;
-//                case 2:my_dron->tail[i]=turnVertical(my_dron->tail[i]);break;
-//            }
-//        }
-//    }
-//
-//	return my_dron;
-//}
-//
-//dron*dronLeft(dron*my_dron){
-//    my_dron=moveTail(my_dron);
-//    my_dron->head=moveLeft(my_dron->head);
-//    return my_dron;
-//}
-//
-//dron*dronRight(dron*my_dron){
-//    my_dron=moveTail(my_dron);
-//    my_dron->head=moveRight(my_dron->head);
-//    return my_dron;
-//}
-//
-//dron*dronUp(dron*my_dron){
-//    my_dron=moveTail(my_dron);
-//    my_dron->head=moveUp(my_dron->head);
-//    return my_dron;
-//}
-//
-//dron*dronDown(dron*my_dron){
-//    my_dron=moveTail(my_dron);
-//    my_dron->head=moveDown(my_dron->head);
-//    return my_dron;
-//}
+
 
 field*my_field;
 
-//field*initBeds(){
-//    int height=20,width=2,y=5;
-//    double p_r=0,p_a=0,r_step=0,g_step=0;
-//    field*my_field=(field*)malloc(sizeof(field));
-//    my_field->size=8;
-//    my_field->color=CreateSolidBrush(RGB(186,109,41));
-//    my_field->beds=(bed*)malloc(sizeof(bed)*my_field->size);
-//    for(int i=0;i<my_field->size;i++){
-//        my_field->beds[i].height=height;
-//        my_field->beds[i].width=width;
-//        my_field->beds[i].x=width+i*(2*width);
-//        my_field->beds[i].y=y;
-//        my_field->beds[i].color=CreateSolidBrush(RGB(0,109,0));
-//        my_field->beds[i].size=10;
-//        my_field->beds[i].pumpkin_bushs=(pumpkin_bush*)malloc(sizeof(pumpkin_bush)*my_field->beds[i].size);
-//        for(int j=0;j<my_field->beds[i].size;j++){
-//            my_field->beds[i].pumpkin_bushs[j].size=3+rand()%5;
-//            my_field->beds[i].pumpkin_bushs[j].x=my_field->beds[i].x+width/2;
-//            my_field->beds[i].pumpkin_bushs[j].y=y+1+width*j;
-//            my_field->beds[i].pumpkin_bushs[j].r=10;
-//            my_field->beds[i].pumpkin_bushs[j].pumpkins=(pumpkin*)malloc(sizeof(pumpkin)*my_field->beds[i].pumpkin_bushs[j].size);
-//            for(int k=0;k<my_field->beds[i].pumpkin_bushs[j].size;k++){
-//                p_a=rand()%6;
-//                p_r=5+rand()%10;
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].x=my_field->beds[i].pumpkin_bushs[j].x*scale+(int)(cos(p_a)*p_r);
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].y=my_field->beds[i].pumpkin_bushs[j].y*scale+(int)(sin(p_a)*p_r);
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].max_r=5+rand()%5;
-//
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].r=0;
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].R=0;
-////                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].G=255;
-////                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].B=0;
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].g_rate=((double)(rand()%10))/(double)20;
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].r_rate=((double)(rand()%5))/(double)5;
-//
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].size=10;
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].ripeness=(HBRUSH*)malloc(sizeof(HBRUSH)*my_field->beds[i].pumpkin_bushs[j].pumpkins[k].size);
-//                r_step=28;
-//                g_step=16;
-//                for(int l=0;l<my_field->beds[i].pumpkin_bushs[j].pumpkins[k].size;l++){
-//                    my_field->beds[i].pumpkin_bushs[j].pumpkins[k].ripeness[l]=CreateSolidBrush(RGB(r_step*l,255-l*g_step,0));
-//                }
-//                my_field->beds[i].pumpkin_bushs[j].pumpkins[k].flag=1;
-//            }
-//        }
-//    }
-//    return my_field;
-//}
-
-//int trajectory[]={2,10,18,26};
-//int traj_ptr=0,traj_flag=1,control=0;
-//
-//dron* autoPilot(dron*my_dron){//start->1 // end->2
-//
-//    printf("X=%d,Y=%d,Status=%d,Value=%d,Dir=%d\n",my_dron->head->x,my_dron->head->y,my_dron->head->status,my_dron->head->value,my_dron->head->dir);
-//
-//    if(my_dron->head->dir!=5){
-//        if((my_dron->head->x!=trajectory[traj_ptr])&&traj_flag==1){
-//            if(my_dron->head->x>trajectory[traj_ptr]){
-//                my_dron=dronLeft(my_dron);
-//            }else{
-//                my_dron=dronRight(my_dron);
-//            }
-//        }else{
-//            if((my_dron->head->y<25)&&traj_flag==1){
-//                my_dron=dronDown(my_dron);
-//            }else{
-//                traj_flag=2;
-//                if(my_dron->head->x<trajectory[traj_ptr]+4){
-//                    my_dron=dronRight(my_dron);
-//                }else{
-//                    if(my_dron->head->y>3){
-//                        my_dron=dronUp(my_dron);
-//                    }else{
-//                        if(my_dron->head->x<30){
-//                            traj_ptr++;
-//                            traj_flag=1;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }else{
-//        if(my_dron->head->status==1){
-//            my_dron->head->dir=6;
-//        }
-//    }
-//
-//    return my_dron;
-//}
-
+int collisionCheck(field*my_field,dron*my_dron){
+    if(my_dron->head->x%4==0&&my_dron->head->y>5&&my_dron->head->y<25){
+        printf("If1 X=%d,Y=%d\n",my_dron->head->x,my_dron->head->y);
+        return 1;
+    }else{
+        if(my_dron->head->y>5&&my_dron->head->y<25&&my_dron->head->pos==1){
+            printf("If2 X=%d,Y=%d\n",my_dron->head->x,my_dron->head->y);
+            return 1;
+        }
+    }
+    printf("Else X=%d,Y=%d\n",my_dron->head->x,my_dron->head->y);
+    return 0;
+}
 
 LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wp,LPARAM lp)
 {
@@ -432,10 +99,20 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wp,LPARAM lp)
             r.right=(MAX_X)*scale;
             r.top=0;
 
-            messages.bottom=2*scale;
-            messages.top=scale;
+            messages.bottom=3*scale;
+            messages.top=2*scale;
             messages.left=0;
             messages.right=34*scale;
+
+            errors1.bottom=scale;
+            errors1.top=0;
+            errors1.left=0;
+            errors1.right=34*scale;
+
+            errors2.bottom=2*scale;
+            errors2.top=scale;
+            errors2.left=0;
+            errors2.right=34*scale;
 
             background=CreateSolidBrush(RGB(0,255,0));
             SetTimer(wnd,0,250,NULL);
@@ -470,7 +147,6 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wp,LPARAM lp)
                     case 5:;break;//Stop
                 }
             }
-
 
             takePumpkin(my_field,my_dron);
 
@@ -559,13 +235,18 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wp,LPARAM lp)
                 }
             }
 
-            if(my_dron->head->dir==6){
+
+            if(collisionCheck(my_field,my_dron)==1){
                 SetBkMode(hdc, TRANSPARENT);
-                DrawText(hdc,Autopilot,strlen(Autopilot),&messages,DT_CENTER);
+                DrawText(hdc,movingError,strlen(movingError),&errors1,DT_CENTER);
             }
             if(my_dron->head->status==2){
                 SetBkMode(hdc, TRANSPARENT);
-                DrawText(hdc,status2,strlen(status2),&messages,DT_CENTER);
+                DrawText(hdc,status2,strlen(status2),&errors2,DT_CENTER);
+            }
+            if(control==1){
+                SetBkMode(hdc, TRANSPARENT);
+                DrawText(hdc,Autopilot,strlen(Autopilot),&messages,DT_CENTER);
             }
 
             EndPaint(wnd,&ps);
@@ -597,6 +278,10 @@ LRESULT CALLBACK WndProc(HWND wnd,UINT msg,WPARAM wp,LPARAM lp)
                 case 'F':
                     control^=1;
                     my_dron->head->dir=6;
+                    if(control==0){
+                        traj_ptr=0;
+                        //traj_ptrToStart();
+                    }
                     break;
                 default:;
             }

@@ -1,5 +1,8 @@
 #include "dron.h"
 
+void traj_ptrToStart(){
+    traj_ptr=0;
+}
 
 roboticTrolley*initTrolley(int x,int y){
     int height=2,width=2;
@@ -154,7 +157,7 @@ roboticTrolley* moveLeft(roboticTrolley*my_rt){//¬лево
 }
 
 roboticTrolley* moveRight(roboticTrolley*my_rt){//¬право
-	if (my_rt->x < (MAX_X-1)){
+	if (my_rt->x < (MAX_X-3)){
 		my_rt->x = my_rt->x + 2;
 		my_rt=turnHorysontal(my_rt);
 		my_rt->pos=1;
@@ -172,7 +175,7 @@ roboticTrolley* moveUp(roboticTrolley*my_rt){//¬верх
 }
 
 roboticTrolley* moveDown(roboticTrolley*my_rt){//¬низ
-	if (my_rt->y < (MAX_Y-1)){
+	if (my_rt->y < (MAX_Y-3)){
 		my_rt->y = my_rt->y + 2;
 		my_rt=turnVertical(my_rt);
 		my_rt->pos=2;
